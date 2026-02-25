@@ -7,15 +7,15 @@
         <div class="card shadow-lg p-4 text-center" style="width: 500px; border-radius: 15px;">
 
             
-            <h5 class="mb-3">login credentials</h5>
+            <h2 class="text-center text-success mb-3">Log-In </h2>
 
             <form>
 
                 <div class="mb-3 text-start">
                     <label for="first" class="form-label fw-bold text-secondary">
-                        Username:
+                        Email:
                     </label>
-                    <input type="text" id="first" name="first" class="form-control" placeholder="Enter your Username"
+                    <input type="text" id="email" name="email" class="form-control" placeholder="Enter your Username"
                         required>
                 </div>
 

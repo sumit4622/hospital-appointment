@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RegistrationUser;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,9 @@ Route::get('/', function () {
 Route::get('registration/', function () {
     return view('authentication.register');
 })->name('user.register');
+
+Route::post('registration/',[RegistrationUser::class, 'store'])->name('user.register.store');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
