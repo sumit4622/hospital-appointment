@@ -8,7 +8,7 @@ use App\Models\Patient;
 use Illuminate\Validation\ValidationException;
 use App\Helper\StringHelper;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log; // Added for logging
+use Illuminate\Support\Facades\Log; 
 use Exception;
 
 class RegistrationService

@@ -11,7 +11,6 @@ use Exception;
 class RegistrationUser extends Controller
 {
     protected $registrationService;
-    
 
     public function __construct(RegistrationService $registrationService)
     {
@@ -25,10 +24,21 @@ class RegistrationUser extends Controller
 
             Auth::login($user);
 
-            return 'welcome user';
+            if ($user->role === 'doctor') {
+                return redirect()->route('doctor.dashboard');
+            } elseif ($user->role === 'patient') {
+                return redirect()->route('patient.dashboard');
+            } elseif ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } else {
+                return redirect()->route('home');
+            }
 
+            return redirect()->route('doctor.dashboard');
         } catch (Exception $e) {
-            return back()->withInput()->withErrors(['error' => $e->getMessage()]);
+            return back()
+                ->withInput()
+                ->withErrors(['error' => $e->getMessage()]);
         }
     }
 }
