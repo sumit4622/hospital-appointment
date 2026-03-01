@@ -28,6 +28,10 @@ class User extends Authenticatable
         'date_of_birth',
     ];
 
+    public function doctorprofile(){
+        return $this->hasOne(Doctor::class, 'email', 'email');
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

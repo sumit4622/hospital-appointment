@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Services\RegistrationService;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 use Exception;
 
 class RegistrationUser extends Controller
