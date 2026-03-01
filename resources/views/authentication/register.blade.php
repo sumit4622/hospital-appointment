@@ -91,7 +91,7 @@
 
             <p class="text-center mt-3">
                 Already have an account?
-                <a href="{{ route('user.login') }}" class="text-decoration-none">
+                <a href="{{ route('login') }}" class="text-decoration-none">
                     Login here
                 </a>
             </p>

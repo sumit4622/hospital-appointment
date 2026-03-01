@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Auth;
 
 use App\Models\User;
 use App\Models\Doctor;
@@ -41,7 +41,7 @@ class RegistrationService
                 'role' => $role,
                 'gender' => $data['gender'],
                 'date_of_birth' => $data['date_of_birth'],
-            ]);
+            ], 201);
         } catch (\Throwable $th) {
             Log::error('Registration Error: ' . $th->getMessage());
 
