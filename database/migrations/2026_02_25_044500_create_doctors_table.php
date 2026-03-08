@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->string('specialization');
             $table->string('phone_number')->unique();
             $table->string('email')->unique();
+            $table->time('available_from')->default('09:00:00');
+            $table->time('available_to')->default('10:00:00');
             $table->timestamps();
         });
     }

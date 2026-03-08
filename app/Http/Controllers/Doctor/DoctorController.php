@@ -7,6 +7,7 @@ use App\Services\Doctor\Doctor;
 use App\Services\Doctor\GetDoctor;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
+use App\Services\Doctor\AppointmentService;
 
 class DoctorController extends Controller
 {
@@ -23,7 +24,17 @@ class DoctorController extends Controller
     {
         try {
             $doctors = $this->allDoctorsService->getAllDoctors();
-            return view('patientdashboard.index', compact('doctors'));
+
+            $uniqueSpecializations = $doctors
+                ->filter(function ($doctor) {
+                    return $doctor->doctorprofile !== null;
+                })
+                ->unique('doctorprofile.specialization');
+
+            return view('patientdashboard.index', [
+                'doctors' => $doctors,
+                'specializations' => $uniqueSpecializations,
+            ]);
         } catch (QueryException $e) {
             Log::error('Database error: ' . $e->getMessage());
             return response()->json(['error' => 'Database error occurred'], 500);
@@ -33,12 +44,16 @@ class DoctorController extends Controller
         }
     }
 
-    public function getdoctorprofile($doctorid)
+    public function getdoctorprofile($doctorid, AppointmentService $appointmentService)
     {
         try {
-            //code...
             $doctor = $this->singleDoctorService->findById($doctorid);
-            return view('patientdashboard.book', compact('doctor'));
+
+            $date = now()->toDateString();
+
+            $slots = $appointmentService->getAvailableSlots($doctorid, $date);
+
+            return view('patientdashboard.book', compact('doctor', 'slots'));
         } catch (QueryException $e) {
             Log::error('Database error: ' . $e->getMessage());
             return response()->json(['error' => 'Database error occurred'], 500);

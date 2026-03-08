@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['patient', 'doctor', 'admin'])->default('patient');
+            $table->boolean('is_admin')->default('false');
             $table->timestamps();
         });
     }
