@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use App\Models\Doctor;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 
 class AppointmentService
 {
@@ -21,11 +20,10 @@ class AppointmentService
                 'patient_id' => auth()->id(),
                 'doctor_id' => $data['doctor_id'],
                 'appointment_date' => $data['appointment_date'],
-                'appointment_time' => $data['appointment_time'], // Ensure this is coming from $data
+                'appointment_time' => $data['appointment_time'], 
                 'status' => 'pending',
             ]);
         } catch (\Throwable $th) {
-            // Log the error to see if it's still failing after the fix
             Log::error('SQL Error: ' . $th->getMessage());
             throw new \Exception('Failed to book appointment: ' . $th->getMessage());
         }
