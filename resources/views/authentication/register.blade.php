@@ -24,18 +24,18 @@
                 <div class="mb-3 row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-secondary">First Name</label>
-                        <input type="text" name="first_name" class="form-control" placeholder="Ram" required>
+                        <input type="text" name="first_name" value="{{old('first_name')}}"class="form-control" placeholder="Ram" required>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-secondary">last Name</label>
-                        <input type="text" name="last_name" class="form-control" placeholder="Nepal" required>
+                        <input type="text" name="last_name" value="{{old('last_name')}}"class="form-control" placeholder="Nepal" required>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold text-secondary">Gender</label>
-                        <select name="gender" class="form-select" required>
+                        <select name="gender"  value="{{old('gender')}}"class="form-select" required>
                             <option value="">Select Gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
@@ -61,14 +61,14 @@
                     <div class="col-md-6 mb-3">
                         <div class="mb-3">
                             <label class="form-label fw-bold text-secondary">Username</label>
-                            <input type="text" name="username" class="form-control" placeholder='Ram123' required>
+                            <input type="text" name="username" value="{{old('username')}}" class="form-control" placeholder='Ram123' required>
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-bold text-secondary">Email</label>
-                    <input type="email" name="email" class="form-control" placeholder="Enter your Username" required>
+                    <input type="email" name="email" value="{{old('email')}}" class="form-control" placeholder="Enter your Username" required>
                 </div>
 
                 <div class="mb-3">

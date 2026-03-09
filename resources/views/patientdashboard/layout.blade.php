@@ -11,10 +11,7 @@
                     <a href="{{ route('patient.dashboard') }}" class="nav-link text-white fw-bold">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link text-white">Book Appointment</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link text-white">My Appointments</a>
+                    <a href="{{route('patient.myappointments', Auth::id())}}" class="nav-link text-white">My Appointments</a>
                 </li>
             </ul>
 

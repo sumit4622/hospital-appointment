@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegistrationUser;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Doctor\DoctorController;
+use App\Http\Controllers\Doctor\appointment;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,7 +40,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::group(['prefix' => 'patient', 'as' => 'patient.'], function () {
         Route::get('/dashboard', [DoctorController::class, 'getdoctor'])->name('dashboard');
-        Route::get('/bookingDoctor/{doctorid}', [DoctorController::class,'getdoctorprofile'])->name('doctor.book');
+        Route::get('/bookingDoctor/{doctorid}', [DoctorController::class, 'getdoctorprofile'])->name('doctor.book');
+        Route::get('/book-appointment/{id}', [appointment::class, 'showDoctor'])->name('appointment.show');
+        Route::post('/book-appointment', [appointment::class, 'storeAppointment'])->name('appointment.store');
+        Route::get('/myappointment/{id}', [appointment::class, 'getappoinment'])->name('myappointments');
     });
 
     Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
