@@ -9,14 +9,14 @@
 
                 <ul class="nav">
                     <li class="nav-item">
-                        <a href="{{ route('doctor.dashboard') }}" class="nav-link text-white fw-bold">Dashboard</a>
+                        <a href="{{ route('doctor.dashboard') }}" class="nav-link text-white fw-bold">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link text-white">Appointments</a>
+                        <a href="{{ route('doctor.view-appoiment')}}" class="nav-link text-white">Appointments</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="#" class="nav-link text-white">Patient Records</a>
-                    </li>
+                    </li> --}}
                 </ul>
 
                 <form action="{{route('logout')}}" method="POST" class="m-0">
@@ -28,26 +28,6 @@
 
         <div class="row g-0 flex-grow-1" style="height: 90%;">
 
-            <aside class="col-md-3 col-lg-2 bg-light border-end p-4 d-flex flex-column">
-                <div class="text-center mb-4">
-                    <h6 class="text-success fw-bold mb-0">
-                        Dr. {{ Auth::user()->full_name }}
-                    </h6>
-                    <small class="text-muted">Medical Practitioner {{Auth::user()->role}}</small>
-                </div>
-
-                <hr>
-
-                <nav class="nav flex-column">
-                    <a class="nav-link text-dark active" href="#"><i class="bi bi-house-door me-2"></i> Home</a>
-                    <a class="nav-link text-dark" href="#"><i class="bi bi-person me-2"></i> Profile</a>
-                    <a class="nav-link text-dark" href="#"><i class="bi bi-gear me-2"></i> Settings</a>
-                </nav>
-
-                <div class="mt-auto">
-                    <p class="text-muted x-small text-center">Hospital System v1.0</p>
-                </div>
-            </aside>
 
             <main class="col-md-9 col-lg-10 p-5 bg-white overflow-auto">
                 @yield('doctorcontent')

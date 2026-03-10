@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\Doctor\appointment;
+use App\Http\Controllers\patient\patientcontroller;
+use App\Http\Controllers\admin\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', function () {
             return view('doctordashboard.index');
         })->name('dashboard');
+        Route::get('/dashboard/view-appoiment', [patientcontroller::class, 'getpatient'])->name('view-appoiment');
     });
 
     Route::group(['prefix' => 'patient', 'as' => 'patient.'], function () {
@@ -43,12 +46,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/bookingDoctor/{doctorid}', [DoctorController::class, 'getdoctorprofile'])->name('doctor.book');
         Route::get('/book-appointment/{id}', [appointment::class, 'showDoctor'])->name('appointment.show');
         Route::post('/book-appointment', [appointment::class, 'storeAppointment'])->name('appointment.store');
-        Route::get('/myappointment/{id}', [appointment::class, 'getappoinment'])->name('myappointments');
+        Route::get('/myappointment', [appointment::class, 'getappoinment'])->name('myappointments');
     });
 
     Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-        Route::get('/dashboard', function () {
-            return view('admindashboard.index');
-        })->name('dashboard');
+        // Point both to the same controller method
+        Route::get('/dashboard', [AdminController::class, 'getuser'])->name('dashboard');
+        Route::get('/appointments', [AdminController::class, 'getuser'])->name('appointments.search');
     });
 });
