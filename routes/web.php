@@ -50,8 +50,9 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-        // Point both to the same controller method
         Route::get('/dashboard', [AdminController::class, 'getuser'])->name('dashboard');
-        Route::get('/appointments', [AdminController::class, 'getuser'])->name('appointments.search');
+        Route::get('/user-edit/{id}', [AdminController::class, 'show'])->name('show.user');
+        Route::put('/user-edit/{id}', [AdminController::class, 'edit'])->name('users.update');
+        Route::delete('/user-delete/{id}', [AdminController::class, 'destory'])->name('users.destroy');
     });
 });
