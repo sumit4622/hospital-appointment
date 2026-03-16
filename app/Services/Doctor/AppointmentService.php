@@ -4,11 +4,10 @@ namespace App\Services\Doctor;
 
 use Exception;
 use Carbon\Carbon;
-// use App\Models\Doctor;
 use App\Models\User;
 use App\Models\Appointment;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Helper\Appoinment\timehelper;
 use Throwable;
 
 class AppointmentService
@@ -19,18 +18,11 @@ class AppointmentService
             throw new \Exception('You must be logged in to book an appointment.');
         }
         try {
-            // dd($data);
-            $today = Carbon::today()->toDateString();
-            $currentTime = Carbon::now();
+            timehelper::currenttimeanddate($data['appointment_time'], $data['appointment_date']);
 
-            dd( $currentTime);
-
-            
             $exists = Appointment::where('doctor_id', $data['doctor_id'])
                 ->where('appointment_date', $data['appointment_date'])
-                ->where('patient_id', auth()->id())
                 ->exists();
-            // dd($exists);
             if ($exists) {
                 throw new \Exception('This time slot is already booked or you have already booked the slot with doctor.');
             }
@@ -85,8 +77,6 @@ class AppointmentService
     {
         try {
             $getappoiment = Appointment::where('patient_id', $id)->with('doctor')->orderBy('appointment_date', 'desc')->get();
-            // $doctor = $getappoiment->first()->doctor;
-            // dd($doctor);
             return $getappoiment;
         } catch (\Throwable $th) {
             throw new Exception('User booking not found.' . $th);
