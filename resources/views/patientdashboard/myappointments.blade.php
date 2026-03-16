@@ -16,14 +16,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($appointment as $app)
+                    @forelse($appointment as $appoiment)
                         <tr>
-                            <td class="fw-bold">Dr. {{ $app->doctor->full_name }}</td>
-                            <td>{{ $app->doctor?->doctorprofile?->specialization ?? 'N/A' }}</td>
-                            <td>{{ \Carbon\Carbon::parse($app->appointment_date)->format('M d, Y') }}</td>
+                            <td class="fw-bold">Dr. {{ $appoiment->doctor->full_name }}</td>
+                            <td>{{ $appoiment->doctor?->doctorprofile?->specialization ?? 'N/A' }}</td>
+                            <td>{{ \Carbon\Carbon::parse($appoiment->appointment_date)->format('M d, Y') }}</td>
                             <td>
                                 <span class="badge bg-outline-primary text-primary border border-primary">
-                                    {{ \Carbon\Carbon::parse($app->appointment_time)->format('h:i A') }}
+                                    {{ \Carbon\Carbon::parse($appoiment->appointment_time)->format('h:i A') }}
                                 </span>
                             </td>
                         </tr>

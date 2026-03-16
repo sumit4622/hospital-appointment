@@ -60,4 +60,15 @@ class AdminController extends Controller
             return redirect()->route('admin.dashboard')->with('success', 'User delete');
         }
     }
+
+    public function getappoiment($id)
+    {
+        try {
+            $value = $this->adminService->getappointment($id);
+            // dd($value);
+            return view('admindashboard.appoiments', compact('value'));
+        } catch (\Throwable $th) {
+            return redirect()->route('admin.dashboard')->with('success', 'no appoiment');
+        }
+    }
 }

@@ -46,7 +46,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/bookingDoctor/{doctorid}', [DoctorController::class, 'getdoctorprofile'])->name('doctor.book');
         Route::get('/book-appointment/{id}', [appointment::class, 'showDoctor'])->name('appointment.show');
         Route::post('/book-appointment', [appointment::class, 'storeAppointment'])->name('appointment.store');
-        Route::get('/myappointment', [appointment::class, 'getappoinment'])->name('myappointments');
+        Route::get('/myappointment/{id}', [appointment::class, 'getappoinment'])->name('myappointments');
     });
 
     Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
@@ -54,5 +54,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/user-edit/{id}', [AdminController::class, 'show'])->name('show.user');
         Route::put('/user-edit/{id}', [AdminController::class, 'edit'])->name('users.update');
         Route::delete('/user-delete/{id}', [AdminController::class, 'destory'])->name('users.destroy');
+        Route::get('/user-appoiment/{id}',[AdminController::class, 'getappoiment'])->name('show.appoiment');
     });
 });

@@ -52,7 +52,7 @@
                             <label class="form-label fw-bold">Gender</label>
                             <select name="gender" class="form-select">
                                 <option value="Male" {{ $user->gender == 'Male' ? 'selected' : '' }}>Male</option>
-                                <option value="Female" {{ $user->gender == 'Female' ? 'selected' : '' }}>Female</option>
+                            <option value="Female" {{ $user->gender == 'Female' ? 'selected' : '' }}>Female</option>
                                 <option value="Other" {{ $user->gender == 'Other' ? 'selected' : '' }}>Other</option>
                             </select>
                         </div>

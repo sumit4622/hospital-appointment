@@ -46,18 +46,47 @@
                         </td>
                         <td>{{ $user->phone_number ?? 'N/A' }}</td>
                         <td>{{ $user->email }}</td>
-                        <td class='gap-5'>
-                            <a href="{{ route('admin.show.user', ['id' => $user->id]) }}" class="btn btn-sm btn-primary">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
-                                onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger text-white">
-                                    <i class="fas fa-trash"></i> Delete
+                        <td class="text-center">
+                            <div class="dropdown">
+                                <button class="btn btn-link text-dark p-0" type="button"
+                                    id="dropdownMenu{{ $user->id }}" data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="text-decoration: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.2rem;"></i>
                                 </button>
-                            </form>
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow"
+                                    aria-labelledby="dropdownMenu{{ $user->id }}">
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{{ route('admin.show.appoiment', ['id' => $user->id]) }}">
+                                            <i class="fas fa-calendar-check text-primary me-2"></i> View Appointment
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item"
+                                            href="{{ route('admin.show.user', ['id' => $user->id]) }}">
+                                            <i class="fas fa-user-edit text-info me-2"></i> Edit User
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+
+                                    <li>
+                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                            onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-trash-alt me-2"></i> Delete
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

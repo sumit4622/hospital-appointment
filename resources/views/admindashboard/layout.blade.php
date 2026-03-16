@@ -8,7 +8,7 @@
                 <h5 class="mb-0">Admin Dashboard</h5>
 
                 <ul class="nav">
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="#" class="nav-link text-white fw-bold">Dashboard</a>
                     </li>
                     <li class="nav-item">
@@ -16,7 +16,7 @@
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link text-white">Patient Records</a>
-                    </li>
+                    </li> --}}
                 </ul>
 
                 <form action="{{route('logout')}}" method="POST" class="m-0">
