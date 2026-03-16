@@ -35,11 +35,7 @@ class appointment extends Controller
     {
         $doctor = Doctor::findOrFail($id);
 
-        $date = request('date') ?? now()->toDateString();
-
-        $slots = $appointmentService->getAvailableSlots($doctor->id, $date);
-
-        return view('patientdashboard.book', compact('doctor', 'slots', 'date'));
+        return view('patientdashboard.book', compact('doctor',));
     }
 
     public function getappoinment($id)

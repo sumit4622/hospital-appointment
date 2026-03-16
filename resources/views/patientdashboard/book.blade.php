@@ -65,11 +65,11 @@
                             @csrf
 
                             <div class="mb-3">
-                                <label class="form-label">Select Doctor</label>
-                                <select name="doctor_id" class="form-select" required>
-                                    <option value="">Select Doctor</option>
-                                    <option value="{{ $doctor->id }}">Dr. {{ $doctor->full_name }}</option>
-                                </select>
+                                <label class="form-label">Doctor Name</label>
+                                <input type="text" class="form-control bg-light" value="Dr. {{ $doctor->full_name }}"
+                                    readonly>
+
+                                <input type="hidden" name="doctor_id" value="{{ $doctor->id }}">
                             </div>
 
                             <div class="row">

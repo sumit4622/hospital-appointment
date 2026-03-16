@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Requests\loginRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Auth\LoginService;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -29,8 +30,10 @@ class LoginController extends Controller
                 return redirect()->route($role . '.dashboard');
             }
             return back()
-                ->withErrors(['email' => 'Invalid credentials'])
+                ->withErrors(['password' => 'The password does not match our records.'])
                 ->onlyInput('email');
+        } catch (ValidationException $e) {
+            return back()->withErrors($e->errors())->onlyInput('email');
         } catch (\Throwable $th) {
             return back()
                 ->withErrors(['email' => 'Server error, please try again.'])
