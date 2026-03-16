@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\admin\AdminService;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminEdit\EditUserRequest;
+use PhpParser\Node\Stmt\TryCatch;
 
 class AdminController extends Controller
 {
@@ -16,6 +17,16 @@ class AdminController extends Controller
         $this->adminService = $adminService;
     }
 
+    public function index ( ){
+        try {
+            //code...0
+            return view('admindashboard.index');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return back()->with('error','page not load.');
+        }
+    }
+
     public function getuser(Request $request)
     {
         try {
@@ -23,7 +34,7 @@ class AdminController extends Controller
 
             $users = $this->adminService->getuser($role);
 
-            return view('admindashboard.index', compact('users'));
+            return view('admindashboard.user', compact('users'));
         } catch (\Throwable $th) {
             return back()->with('error', 'Something went wrong!');
         }
