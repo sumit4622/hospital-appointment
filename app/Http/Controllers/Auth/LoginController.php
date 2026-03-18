@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Requests\loginRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Auth\LoginService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
@@ -19,25 +20,22 @@ class LoginController extends Controller
 
     public function authenticate(loginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validated();
 
         try {
-            if ($this->loginService->login($credentials)) {
-                $request->session()->regenerate();
-                $user = auth()->user();
-                $role = strtolower(trim($user->role));
+            //code...
+            $user = $this->loginService->login($credentials);
 
-                return redirect()->route($role . '.dashboard');
-            }
-            return back()
-                ->withErrors(['password' => 'The password does not match our records.'])
-                ->onlyInput('email');
-        } catch (ValidationException $e) {
-            return back()->withErrors($e->errors())->onlyInput('email');
+            Auth::login($user);
+
+            $request->session()->regenerate();
+            $user = auth()->user();
+            $role = strtolower(trim($user->role));
+
+            return redirect()->route($role . '.dashboard');
         } catch (\Throwable $th) {
-            return back()
-                ->withErrors(['email' => 'Server error, please try again.'])
-                ->onlyInput('email');
+            //throw $th;
+            throw $th;
         }
     }
 }

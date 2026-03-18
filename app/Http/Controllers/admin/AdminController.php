@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Services\admin\AdminService;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminEdit\EditUserRequest;
-use PhpParser\Node\Stmt\TryCatch;
 
 class AdminController extends Controller
 {
@@ -17,24 +16,50 @@ class AdminController extends Controller
         $this->adminService = $adminService;
     }
 
-    public function index ( ){
+    public function index()
+    {
         try {
             //code...0
             return view('admindashboard.index');
         } catch (\Throwable $th) {
             //throw $th;
-            return back()->with('error','page not load.');
+            return back()->with('error', 'page not load.');
         }
     }
 
     public function getuser(Request $request)
     {
         try {
-            $role = $request->query('role');
+            $name = $request->query('name');
+            $users = $this->adminService->getuser($name);
 
-            $users = $this->adminService->getuser($role);
+            // Return JSON instead of view()
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'data' => $users,
+                ],
+                200,
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Failed to retrieve users.',
+                ],
+                500,
+            );
+        }
+    }
 
-            return view('admindashboard.user', compact('users'));
+    public function getdoctor(Request $request)
+    {
+        try {
+            $name = $request->query('name');
+
+            $usersdoctor = $this->adminService->getdoctor($name);
+
+            return view('admindashboard.doctor', compact('usersdoctor'));
         } catch (\Throwable $th) {
             return back()->with('error', 'Something went wrong!');
         }
@@ -53,7 +78,6 @@ class AdminController extends Controller
     public function edit(EditUserRequest $request, $id)
     {
         try {
-            //code...
             $this->adminService->updatedata($id, $request->validated());
 
             return redirect()->route('admin.dashboard')->with('success', 'update succesfull.');

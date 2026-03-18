@@ -23,7 +23,6 @@ class RegistrationUser extends Controller
             $user = $this->registrationService->register($request->validated());
 
             Auth::login($user);
-
             if ($user->role === 'doctor') {
                 return redirect()->route('doctor.dashboard');
             } elseif ($user->role === 'patient') {

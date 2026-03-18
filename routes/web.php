@@ -51,10 +51,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-        Route::get('/dashboard/user', [AdminController::class,'getuser'])->name('dashboard.user');
+        Route::get('/dashboard/user', [AdminController::class, 'getuser'])->name('dashboard.user');
+        Route::get('/dashboard/userdoctor', [AdminController::class, 'getdoctor'])->name('dashboard.doctor');
         Route::get('/user-edit/{id}', [AdminController::class, 'show'])->name('show.user');
         Route::put('/user-edit/{id}', [AdminController::class, 'edit'])->name('users.update');
         Route::delete('/user-delete/{id}', [AdminController::class, 'destory'])->name('users.destroy');
-        Route::get('/user-appoiment/{id}',[AdminController::class, 'getappoiment'])->name('show.appoiment');
+        Route::get('/user-appoiment/{id}', [AdminController::class, 'getappoiment'])->name('show.appoiment');
     });
 });

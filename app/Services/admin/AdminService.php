@@ -9,16 +9,31 @@ use App\Models\User;
 
 class AdminService
 {
-    public function getuser($role = null)
+    public function getuser($name)
     {
-        $query = User::query();
+        $query = User::where('is_admin', false)->where('role', 'patient');
 
-        if ($role) {
-            $cleanRole = strtolower($role);
-            $query->where('role', $cleanRole);
+        if($name){
+            // dd($name);
+            $query->where('username', 'like', "%$name%");
         }
 
-        return $query->get();
+        $patient = $query->get();
+
+        return $patient;
+    }
+
+    public function getdoctor($name)
+    {
+        $query = User::where('is_admin', false)->where('role', 'doctor');
+
+        if ($name) {
+            $query->where('username', 'like', "%$name%");
+        }
+
+        $doctors = $query->get();
+
+        return $doctors;
     }
 
     public function iduser($id)
