@@ -3,19 +3,18 @@
 namespace App\Services\admin;
 
 use App\Models\Appointment;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Log;
-use App\Models\User;
 
 class AdminService
 {
     public function getuser($name)
     {
-        $query = User::where('is_admin', false)->where('role', 'patient');
+        $query = User::where('is_active', false)->where('status', 'patient');
 
-        if($name){
-            // dd($name);
-            $query->where('username', 'like', "%$name%");
+        if ($name) {
+            $query->where('full_name', 'like', "%$name%");
         }
 
         $patient = $query->get();
@@ -25,10 +24,10 @@ class AdminService
 
     public function getdoctor($name)
     {
-        $query = User::where('is_admin', false)->where('role', 'doctor');
+        $query = User::where('is_active', false)->where('status', 'doctor');
 
         if ($name) {
-            $query->where('username', 'like', "%$name%");
+            $query->where('full_name', 'like', "%$name%");
         }
 
         $doctors = $query->get();
@@ -39,12 +38,17 @@ class AdminService
     public function iduser($id)
     {
         $user = User::findOrFail($id);
+
         return $user;
     }
 
     public function updatedata($id, array $data)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
+
+        if (! $user) {
+            throw new \Exception("User with ID $id not found in database.");
+        }
 
         return $user->update($data);
     }
@@ -58,17 +62,16 @@ class AdminService
     public function getappointment($id)
     {
         try {
-            // Find appointments where the user is EITHER the patient OR the doctor
             $getappoiment = Appointment::where(function ($query) use ($id) {
                 $query->where('patient_id', $id)->orWhere('doctor_id', $id);
             })
-                ->with(['doctor', 'patient']) // Load both relationships
+                ->with(['doctor', 'patient'])
                 ->orderBy('appointment_date', 'desc')
                 ->get();
 
             return $getappoiment;
         } catch (\Throwable $th) {
-            Log::error('Appointment error: ' . $th->getMessage());
+            Log::error('Appointment error: '.$th->getMessage());
             throw new Exception('Records not found.');
         }
     }

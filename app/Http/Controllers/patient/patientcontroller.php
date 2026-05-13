@@ -4,12 +4,11 @@ namespace App\Http\Controllers\patient;
 
 use App\Http\Controllers\Controller;
 use App\Services\patient\PatientService;
-use App\Http\Requests\Appointment\StoreAppointmentRequest;
 
 class patientcontroller extends Controller
 {
     //
-    protected $patientService;
+    protected PatientService $patientService;
 
     public function __construct(PatientService $patientService)
     {
@@ -21,9 +20,9 @@ class patientcontroller extends Controller
         try {
             $appointments = $this->patientService->getappoiment();
 
-            return view('doctordashboard.appointments', compact('appointments'));
+            return $this->success($appointments, 'Appointments fetched successfully.', 200);
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            return $this->error($th->getMessage(), 'Server Error', 500);
         }
     }
 }

@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Requests\loginRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\loginRequest;
 use App\Services\Auth\LoginService;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
     //
-    protected $loginService;
+    protected LoginService $loginService;
 
     public function __construct(LoginService $loginService)
     {
@@ -23,19 +22,23 @@ class LoginController extends Controller
         $credentials = $request->validated();
 
         try {
-            //code...
+            // code...
             $user = $this->loginService->login($credentials);
 
-            Auth::login($user);
+            $result = [
+                'user' => $user['user'],
+                'token' => $user['token'],
+                'status' => strtolower(trim($user['user']->status)),
+            ];
 
-            $request->session()->regenerate();
-            $user = auth()->user();
-            $role = strtolower(trim($user->role));
+            return $this->Success($result, 'Login successful.', 200);
 
-            return redirect()->route($role . '.dashboard');
+            return $this->success();
+        } catch (ValidationException $th) {
+            return $this->error($th->errors(), 'Validation Error', 422);
         } catch (\Throwable $th) {
-            //throw $th;
-            throw $th;
+            // throw $th;
+            return $this->error($th->getMessage(), 'server error', 500);
         }
     }
 }

@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Doctor;
 
 use App\Http\Controllers\Controller;
+use App\Services\Doctor\AppointmentService;
 use App\Services\Doctor\Doctor;
 use App\Services\Doctor\GetDoctor;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Log;
-use App\Services\Doctor\AppointmentService;
+use Illuminate\Http\Request;
 
 class DoctorController extends Controller
 {
-    protected $allDoctorsService;
-    protected $singleDoctorService;
+    protected Doctor $allDoctorsService;
+
+    protected GetDoctor $singleDoctorService;
 
     public function __construct(Doctor $allDoctors, GetDoctor $singleDoctor)
     {
@@ -20,27 +20,26 @@ class DoctorController extends Controller
         $this->singleDoctorService = $singleDoctor;
     }
 
-    public function getdoctor()
+    public function getdoctor(Request $request)
     {
         try {
-            $doctors = $this->allDoctorsService->getAllDoctors();
+            $specialization = $request->query('specialization');
 
-            $uniqueSpecializations = $doctors
-                ->filter(function ($doctor) {
-                    return $doctor->doctorprofile !== null;
-                })
-                ->unique('doctorprofile.specialization');
+            $doctors = $this->allDoctorsService->getAllDoctors($specialization);
+            $specializationList = $this->allDoctorsService->getUniqueSpecializations();
 
-            return view('patientdashboard.index', [
+            if ($doctors->isEmpty()) {
+                return $this->error(null, 'Doctor is not available right now', 404);
+            }
+
+            $result = [
                 'doctors' => $doctors,
-                'specializations' => $uniqueSpecializations,
-            ]);
-        } catch (QueryException $e) {
-            Log::error('Database error: ' . $e->getMessage());
-            return response()->json(['error' => 'Database error occurred'], 500);
-        } catch (\Exception $e) {
-            Log::error('Unexpected error: ' . $e->getMessage());
-            return response()->json(['error' => 'An unexpected error occurred'], 500);
+                'specializations' => $specializationList,
+            ];
+
+            return $this->success($result, 'Doctors and specializations retrieved.', 200);
+        } catch (\Exception $th) {
+            return $this->error($th->getMessage(), 'server issue', 500);
         }
     }
 
@@ -52,14 +51,17 @@ class DoctorController extends Controller
             $date = now()->toDateString();
 
             $slots = $appointmentService->getAvailableSlots($doctorid, $date);
+            dd($slots);
 
-            return view('patientdashboard.book', compact('doctor', 'slots'));
-        } catch (QueryException $e) {
-            Log::error('Database error: ' . $e->getMessage());
-            return response()->json(['error' => 'Database error occurred'], 500);
-        } catch (\Exception $e) {
-            Log::error('Unexpected error: ' . $e->getMessage());
-            return response()->json(['error' => 'An unexpected error occurred'], 500);
+            $result = [
+                'doctor' => $doctor,
+                'date' => $date,
+                'slote' => $slots,
+            ];
+
+            return $this->success($result, 'fetch doctor profile', 200);
+        } catch (\Exception $th) {
+            return $this->error($th->getMessage(), 'server issue', 500);
         }
     }
 }

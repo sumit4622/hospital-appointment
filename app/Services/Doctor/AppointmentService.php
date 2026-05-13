@@ -2,20 +2,28 @@
 
 namespace App\Services\Doctor;
 
-use Exception;
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Appointment;
-use Illuminate\Support\Facades\Log;
 use App\Helper\Appoinment\timehelper;
+use App\Models\Appointment;
+use App\Models\Doctor;
+use App\Models\Patient;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class AppointmentService
 {
     public function storeappointment(array $data)
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             throw new \Exception('You must be logged in to book an appointment.');
+        }
+
+        $user = auth()->user();
+        $patient = Patient::where('user_id', $user->id)->first();
+
+        if (! $patient) {
+            throw new \Exception('Patient profile not found for this user.');
         }
         try {
             timehelper::currenttimeanddate($data['appointment_time'], $data['appointment_date']);
@@ -26,15 +34,16 @@ class AppointmentService
             if ($exists) {
                 throw new \Exception('This time slot is already booked or you have already booked the slot with doctor.');
             }
+
             return Appointment::create([
-                'patient_id' => auth()->id(),
+                'patient_id' => $patient->id,
                 'doctor_id' => $data['doctor_id'],
                 'appointment_date' => $data['appointment_date'],
                 'appointment_time' => $data['appointment_time'],
                 'status' => 'pending',
             ]);
         } catch (Throwable $th) {
-            Log::error('General Error: ' . $th->getMessage());
+            Log::error('General Error: '.$th->getMessage());
             throw $th;
         }
     }
@@ -42,17 +51,15 @@ class AppointmentService
     public function getAvailableSlots($doctorId, $date)
     {
         try {
-            //code...
-            $user = User::with('doctorprofile')->findOrFail($doctorId);
+            // code...
+            $doctor = Doctor::findOrFail($doctorId);
 
-            if (!$user || !$user->doctorprofile) {
+            if (! $doctor) {
                 throw new Exception('user not found or doctor profile not found.');
             }
 
-            $doctorprofile = $user->doctorprofile;
-
-            $startTime = Carbon::parse($doctorprofile->available_from);
-            $endTime = Carbon::parse($doctorprofile->available_to);
+            $startTime = Carbon::parse($doctor->available_from);
+            $endTime = Carbon::parse($doctor->available_to);
 
             $slots = [];
 
@@ -64,11 +71,12 @@ class AppointmentService
                 $starttime->addMinutes(15);
             }
 
-            $bookedSlots = Appointment::where('doctor_id', $doctorId)->where('appointment_date', $date)->pluck('appointment_time')->map(fn($time) => Carbon::parse($time)->format('H:i'))->toArray();
+            $bookedSlots = Appointment::where('doctor_id', $doctorId)->where('appointment_date', $date)->pluck('appointment_time')->map(fn ($time) => Carbon::parse($time)->format('H:i'))->toArray();
 
             return array_values(array_diff($slots, $bookedSlots));
         } catch (\Throwable $th) {
-            Log::error('Error generating slots: ' . $th->getMessage());
+            Log::error('Error generating slots: '.$th->getMessage());
+
             return $th;
         }
     }
@@ -77,9 +85,10 @@ class AppointmentService
     {
         try {
             $getappoiment = Appointment::where('patient_id', $id)->with('doctor')->orderBy('appointment_date', 'desc')->get();
+
             return $getappoiment;
         } catch (\Throwable $th) {
-            throw new Exception('User booking not found.' . $th);
+            throw new Exception('User booking not found.'.$th);
         }
     }
 }

@@ -9,13 +9,22 @@ class Patient extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'name',
+        'email',
+        'phone_number',
+        'date_of_birth',
+        'gender',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function doctor()
+    public function appointments()
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->hasMany(Appointment::class);
     }
 }

@@ -10,8 +10,7 @@ class timehelper
     {
         $nowtime = carbon::now('Asia/Kathmandu');
 
-        $appointmentdatetime = Carbon::parse($appointment_date. ' '. $appointment_time, 'Asia/Kathmandu');
-
+        $appointmentdatetime = Carbon::parse($appointment_date.' '.$appointment_time, 'Asia/Kathmandu');
 
         if ($appointmentdatetime->lessThanOrEqualTo($nowtime)) {
             throw new \Exception('You cannot book an appointment in the past or near to this current time.');

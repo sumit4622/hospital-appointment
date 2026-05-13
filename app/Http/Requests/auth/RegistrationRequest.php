@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\AdminEdit;
+namespace App\Http\Requests\auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EditUserRequest extends FormRequest
+class RegistrationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,14 +21,11 @@ class EditUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = $this->route('id');
-
         return [
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$userId,
-            'phone_number' => 'nullable|string|max:20',
-            'status' => 'required|in:doctor,patient,admin',
-            'date_of_birth' => 'nullable|date|before:today',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email:rfc,dns',
+            'password' => 'required',
         ];
     }
 }

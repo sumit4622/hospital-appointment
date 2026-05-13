@@ -23,7 +23,7 @@ class StoreAppointmentRequest extends FormRequest
     {
         return [
             //
-            'doctor_id'        => 'required|exists:users,id',
+            'doctor_id' => 'required|exists:doctors,id',
             'appointment_date' => 'required|date|after_or_equal:today',
             'appointment_time' => 'required',
         ];
@@ -31,8 +31,8 @@ class StoreAppointmentRequest extends FormRequest
 
     public function messages()
     {
-        return[
-            'appoinment_date.after_or_equal' => 'you cannot book an appointment in past.'
+        return [
+            'appoinment_date.after_or_equal' => 'you cannot book an appointment in past.',
         ];
     }
 }
