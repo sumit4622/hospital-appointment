@@ -14,7 +14,13 @@
                                 <th>ID</th>
                                 <th>Date</th>
                                 <th>Time</th>
-                                <th>Doctor Name</th>
+                                <th>
+                                    @if (request()->route('id') == ($value->first()->patient_id ?? null))
+                                        Doctor Name
+                                    @else
+                                        Patient Name
+                                    @endif
+                                </th>
                                 <th>Contact</th>
                                 {{-- <th>Status</th> --}}
                             </tr>

@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\AdminEdit;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EditUserRequest extends FormRequest
+class SearchUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -21,14 +21,8 @@ class EditUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = $this->route('id');
-
         return [
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$userId,
-            'phone_number' => 'nullable|string|max:20',
-            'status' => 'required|in:doctor,patient,admin',
-            'date_of_birth' => 'nullable|date|before:today',
+            //
         ];
     }
 }

@@ -8,19 +8,15 @@
     </a>
     <div class="card shadow-sm p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="text-success mb-0">user list</h4>
+            <h4 class="text-success mb-0">doctor list</h4>
 
             <div class="input-group shadow-sm" style="max-width: 400px; border-radius: 8px; overflow: hidden;">
-                <form action="{{ route('admin.dashboard.user') }}" method="GET" class="d-flex shadow-sm"
+                <form action="{{ route('admin.dashboard.doctor') }}" method="GET" class="d-flex shadow-sm"
                     style="max-width: 400px; border-radius: 8px; overflow: hidden;">
                     <div class="input-group">
                         <input type="search" name="name" id="roleSpecSearch" class="form-control border-0"
-                            list="roleList" placeholder="Filter by role..." value="{{ request('name') }}" />
+                            list="roleList" placeholder="search here name ..." value="{{ request('name') }}" />
 
-                        <datalist id="roleList">
-                            <option value="Doctor"></option>
-                            <option value="Patient"></option>
-                        </datalist>
 
                         <button type="submit" class="btn btn-success border-0">
                             <i class="fas fa-search"></i> Search
@@ -42,7 +38,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($users as $index => $user)
+                @foreach ($usersdoctor as $index => $user)
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>
@@ -96,11 +92,11 @@
                     </tr>
                 @endforeach
 
-                {{-- @if ($users->isEmpty())
+                @if ($usersdoctor->isEmpty())
                     <tr>
                         <td colspan="5" class="text-center text-muted">No records found for "{{ request('role') }}"</td>
                     </tr>
-                @endif --}}
+                @endif
             </tbody>
         </table>
     </div>

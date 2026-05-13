@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\RegistrationUser;
+use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\Doctor\DoctorController;
+use App\Http\Controllers\Auth\RegistrationUser;
 use App\Http\Controllers\Doctor\appointment;
+use App\Http\Controllers\Doctor\DoctorController;
 use App\Http\Controllers\patient\patientcontroller;
-use App\Http\Controllers\admin\AdminController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,41 +20,38 @@ use App\Http\Controllers\admin\AdminController;
 |
 */
 
-Route::get('/', function () {
-    return view('authentication.login');
-})->name('login');
+Route::group(['prefix' => 'v1'], function () {
+    Route::post('/login', [LoginController::class, 'authenticate']);
+    Route::post('/registration', [RegistrationUser::class, 'store']);
 
-Route::post('/login/authenticate', [LoginController::class, 'authenticate'])->name('login.authenticate');
-Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [LogoutController::class, 'logout']);
 
-Route::get('registration/', function () {
-    return view('authentication.register');
-})->name('user.register');
+        Route::group(['prefix' => 'doctor'], function () {
+            Route::get('/dashboard-data', function () {
+                return response()->json(['message' => 'Doctor Dashboard Data']);
+            });
+            Route::get('/view-appointment', [patientcontroller::class, 'getpatient']);
+        });
 
-Route::post('registration/', [RegistrationUser::class, 'store'])->name('user.register.store');
+        Route::group(['prefix' => 'patient'], function () {
+            Route::get('/dashboard', [DoctorController::class, 'getdoctor']);
+            Route::get('/doctor-profile/{doctorid}', [DoctorController::class, 'getdoctorprofile']);
+            Route::get('/appointment-slots/{id}', [appointment::class, 'showDoctor']);
+            Route::post('/book-appointment', [appointment::class, 'storeAppointment']);
+            Route::get('/my-appointments/{id}', [appointment::class, 'getappoinment']);
+        });
 
-Route::middleware(['auth'])->group(function () {
-    Route::group(['prefix' => 'doctor', 'as' => 'doctor.'], function () {
-        Route::get('/dashboard', function () {
-            return view('doctordashboard.index');
-        })->name('dashboard');
-        Route::get('/dashboard/view-appoiment', [patientcontroller::class, 'getpatient'])->name('view-appoiment');
-    });
+        Route::group(['prefix' => 'admin'], function () {
+            Route::get('/dashboard', [AdminController::class, 'index']);
+            Route::get('/users', [AdminController::class, 'getuser']);
+            Route::get('/doctors', [AdminController::class, 'getdoctor']);
 
-    Route::group(['prefix' => 'patient', 'as' => 'patient.'], function () {
-        Route::get('/dashboard', [DoctorController::class, 'getdoctor'])->name('dashboard');
-        Route::get('/bookingDoctor/{doctorid}', [DoctorController::class, 'getdoctorprofile'])->name('doctor.book');
-        Route::get('/book-appointment/{id}', [appointment::class, 'showDoctor'])->name('appointment.show');
-        Route::post('/book-appointment', [appointment::class, 'storeAppointment'])->name('appointment.store');
-        Route::get('/myappointment/{id}', [appointment::class, 'getappoinment'])->name('myappointments');
-    });
+            Route::get('/user/{id}', [AdminController::class, 'show']);
+            Route::patch('/user/{id}', [AdminController::class, 'edit']);
 
-    Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-        Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-        Route::get('/dashboard/user', [AdminController::class,'getuser'])->name('dashboard.user');
-        Route::get('/user-edit/{id}', [AdminController::class, 'show'])->name('show.user');
-        Route::put('/user-edit/{id}', [AdminController::class, 'edit'])->name('users.update');
-        Route::delete('/user-delete/{id}', [AdminController::class, 'destory'])->name('users.destroy');
-        Route::get('/user-appoiment/{id}',[AdminController::class, 'getappoiment'])->name('show.appoiment');
+            Route::delete('/user/{id}', [AdminController::class, 'destory']);
+            Route::get('/user-appointments/{id}', [AdminController::class, 'getappoiment']);
+        });
     });
 });

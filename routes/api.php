@@ -1,8 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,15 +11,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-
-use App\Http\Controllers\Auth\RegistrationUser;
+use App\Http\Controllers\admin\AddUserController;
+use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\RegistrationUser;
+use App\Http\Controllers\Doctor\appointment;
 use App\Http\Controllers\Doctor\DoctorController;
+use App\Http\Controllers\patient\patientcontroller;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,36 +33,36 @@ use App\Http\Controllers\Doctor\DoctorController;
 |
 */
 
-Route::get('/', function () {
-    return view('authentication.login');
-})->name('login');
+Route::group(['prefix' => 'v1'], function () {
+    Route::post('/login', [LoginController::class, 'authenticate']);
+    Route::post('/register', [RegistrationUser::class, 'store']);
 
-Route::post('/login/authenticate', [LoginController::class, 'authenticate'])->name('login.authenticate');
-Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
+    Route::post('forgot-password', [ForgotPasswordController::class, 'sendotp']);
+    Route::post('reset-password', [ForgotPasswordController::class, 'reset']);
 
-Route::get('registration/', function () {
-    return view('authentication.register');
-})->name('user.register');
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [LogoutController::class, 'logout']);
 
-Route::post('registration/', [RegistrationUser::class, 'store'])->name('user.register.store');
+        Route::prefix('doctor')->group(function () {
+            Route::get('/appointments', [patientcontroller::class, 'getpatient']);
+        });
 
-Route::middleware(['auth'])->group(function () {
-    Route::group(['prefix' => 'doctor', 'as' => 'doctor.'], function () {
-        Route::get('/dashboard', function () {
-            return view('doctordashboard.index');
-        })->name('dashboard');
-    });
+        Route::prefix('patient')->group(function () {
+            Route::get('/doctors', [DoctorController::class, 'getdoctor']);
+            Route::get('/doctors/{doctorid}', [DoctorController::class, 'getdoctorprofile']);
+            Route::get('/getslot/{id}', [appointment::class, 'getslot']);
+            Route::post('/book-appointment', [appointment::class, 'storeAppointment']);
+            Route::get('/my-appointments/{id}', [appointment::class, 'getappoinment']);
+        });
 
-    Route::group(['prefix' => 'patient', 'as' => 'patient.'], function () {
-        Route::get('/dashboard', function () {
-            return view('patientdashboard.index');
-        })->name('dashboard');
-        Route::get('/dashboard', [DoctorController::class, 'getdoctor'])->name('dashboard');
-    });
-
-    Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-        Route::get('/dashboard', function () {
-            return view('admindashboard.index');
-        })->name('dashboard');
+        Route::prefix('admin')->group(function () {
+            Route::get('/users', [AdminController::class, 'getuser']);
+            Route::get('/doctors', [AdminController::class, 'getdoctor']);
+            Route::get('/user/{id}', [AdminController::class, 'show']);
+            Route::patch('/user/{id}', [AdminController::class, 'edit']);
+            Route::delete('/user/{id}', [AdminController::class, 'destroy']);
+            Route::post('/store-doctor', [AddUserController::class, 'storeDoctor']);
+            Route::post('/store-patient', [AddUserController::class, 'storePatient']);
+        });
     });
 });

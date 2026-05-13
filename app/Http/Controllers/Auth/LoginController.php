@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Requests\loginRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\loginRequest;
 use App\Services\Auth\LoginService;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
     //
-    protected $loginService;
+    protected LoginService $loginService;
 
     public function __construct(LoginService $loginService)
     {
@@ -19,25 +19,26 @@ class LoginController extends Controller
 
     public function authenticate(loginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->validated();
 
         try {
-            if ($this->loginService->login($credentials)) {
-                $request->session()->regenerate();
-                $user = auth()->user();
-                $role = strtolower(trim($user->role));
+            // code...
+            $user = $this->loginService->login($credentials);
 
-                return redirect()->route($role . '.dashboard');
-            }
-            return back()
-                ->withErrors(['password' => 'The password does not match our records.'])
-                ->onlyInput('email');
-        } catch (ValidationException $e) {
-            return back()->withErrors($e->errors())->onlyInput('email');
+            $result = [
+                'user' => $user['user'],
+                'token' => $user['token'],
+                'status' => strtolower(trim($user['user']->status)),
+            ];
+
+            return $this->Success($result, 'Login successful.', 200);
+
+            return $this->success();
+        } catch (ValidationException $th) {
+            return $this->error($th->errors(), 'Validation Error', 422);
         } catch (\Throwable $th) {
-            return back()
-                ->withErrors(['email' => 'Server error, please try again.'])
-                ->onlyInput('email');
+            // throw $th;
+            return $this->error($th->getMessage(), 'server error', 500);
         }
     }
 }

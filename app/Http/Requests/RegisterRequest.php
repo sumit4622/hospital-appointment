@@ -23,7 +23,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             //
-            'username' => 'required|string|max:20|unique:users,username',
+            // 'username' => 'required|string|max:20|unique:users,username',
             'first_name' => 'required|string|',
             'last_name' => 'required|string',
             'gender' => 'required|string',
@@ -38,7 +38,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'phone_number.unique' => 'This phone number is already registered to an account.',
-            'username.unique'     => 'This username is already taken.',
+            'username.unique' => 'This username is already taken.',
         ];
     }
 }

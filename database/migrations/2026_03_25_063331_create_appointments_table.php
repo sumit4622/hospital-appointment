@@ -4,22 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('appointments', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('patient_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('doctor_id')->constrained('users')->onDelete('cascade');
+            $table->id('appointment_id');
+            $table->foreignId('patient_id')->constrained('patients', 'id')->onDelete('cascade');
+            $table->foreignId('doctor_id')->constrained('doctors', 'id')->onDelete('cascade');
+            // $table->foreignId('schedule_id')->constrained('doctor_schedules', 'id')->onDelete('cascade');
             $table->date('appointment_date');
             $table->time('appointment_time');
-            $table->string('status')->default('pending');
+            $table->enum('status', ['confirm', 'pending', 'cancelled', 'completed']);
             $table->timestamps();
-            $table->unique(['doctor_id','appointment_date', 'appointment_time'], 'doctor_time_unique');
-            $table->unique(['patient_id', 'doctor_id', 'appointment_date'], 'patient_doctor_daily_unique');
         });
     }
 

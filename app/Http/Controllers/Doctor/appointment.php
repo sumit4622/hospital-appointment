@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Doctor;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Appointment\GetDoctorSlotRequest;
 use App\Http\Requests\Appointment\StoreAppointmentRequest;
-use App\Services\Doctor\AppointmentService;
 use App\Models\Doctor;
+use App\Services\Doctor\AppointmentService;
 
 class appointment extends Controller
 {
     //
-    protected $appointmentService;
+    protected AppointmentService $appointmentService;
 
     public function __construct(AppointmentService $appointmentService)
     {
@@ -21,13 +22,11 @@ class appointment extends Controller
     {
         // dd($request->validated());
         try {
-            $this->appointmentService->storeappointment($request->validated());
+            $appointment = $this->appointmentService->storeappointment($request->validated());
 
-            return redirect()->route('patient.dashboard')->with('success', 'Appointment booked successfully!');
+            return $this->success($appointment, 'Appointment booked successfully!', 200);
         } catch (\Exception $th) {
-            return back()
-                ->withInput()
-                ->withErrors(['error' => $th->getMessage()]);
+            return $this->error($th->getMessage(), 'An unexpected error occurred', 500);
         }
     }
 
@@ -35,7 +34,7 @@ class appointment extends Controller
     {
         $doctor = Doctor::findOrFail($id);
 
-        return view('patientdashboard.book', compact('doctor',));
+        return view('patientdashboard.book', compact('doctor'));
     }
 
     public function getappoinment($id)
@@ -43,9 +42,25 @@ class appointment extends Controller
         try {
             $appointment = $this->appointmentService->getappoinment($id);
 
-            return view('patientdashboard.myappointments', compact('appointment'));
+            return $this->success($appointment, 'Appointment details retrieved successfully.', 200);
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => $th->getMessage()]);
+            return $this->error($th->getMessage(), 'Not found', 404);
+        }
+    }
+
+    public function getslot(GetDoctorSlotRequest $request, $id)
+    {
+        try {
+            // code...
+            $validate = $request->validated();
+
+            dd($validate);
+
+            return $this->success('fetch data', 200);
+
+        } catch (\Throwable $th) {
+            // throw $th;
+            return $this->error($th->getMessage(), 'server issue', 500);
         }
     }
 }

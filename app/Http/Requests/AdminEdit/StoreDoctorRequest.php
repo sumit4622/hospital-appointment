@@ -4,7 +4,7 @@ namespace App\Http\Requests\AdminEdit;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EditUserRequest extends FormRequest
+class StoreDoctorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,14 +21,19 @@ class EditUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = $this->route('id');
-
         return [
-            'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$userId,
-            'phone_number' => 'nullable|string|max:20',
-            'status' => 'required|in:doctor,patient,admin',
-            'date_of_birth' => 'nullable|date|before:today',
+            'name' => 'required|string|max:255',
+            'department_id' => 'required',
+            'phone_number' => 'required|string|unique:doctors,phone_number|max:10',
+            'email' => 'required|email|unique:doctors,email',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'email.unique' => 'email address is already registered.',
+            'phone_number.unique' => 'phone number must be unique.',
         ];
     }
 }
