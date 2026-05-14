@@ -7,6 +7,7 @@ use App\Services\Doctor\AppointmentService;
 use App\Services\Doctor\Doctor;
 use App\Services\Doctor\GetDoctor;
 use Illuminate\Http\Request;
+use App\Http\Requests\GetSpecializationRequest;
 
 class DoctorController extends Controller
 {
@@ -20,10 +21,11 @@ class DoctorController extends Controller
         $this->singleDoctorService = $singleDoctor;
     }
 
-    public function getdoctor(Request $request)
+    public function getdoctor(GetSpecializationRequest $request)
     {
         try {
-            $specialization = $request->query('specialization');
+            $data = $request->validated();
+            $specialization  = $data['specialization'];
 
             $doctors = $this->allDoctorsService->getAllDoctors($specialization);
             $specializationList = $this->allDoctorsService->getUniqueSpecializations();
@@ -51,7 +53,7 @@ class DoctorController extends Controller
             $date = now()->toDateString();
 
             $slots = $appointmentService->getAvailableSlots($doctorid, $date);
-            dd($slots);
+            // dd($slots);
 
             $result = [
                 'doctor' => $doctor,
@@ -61,6 +63,21 @@ class DoctorController extends Controller
 
             return $this->success($result, 'fetch doctor profile', 200);
         } catch (\Exception $th) {
+            return $this->error($th->getMessage(), 'server issue', 500);
+        }
+    }
+
+    public function getSpeclization(GetSpecializationRequest $request){
+        try {
+            //code...
+            $data = $request->validated();
+            $specialization = $data['specialization'];
+            // dd($specialization);
+            $result = $this->allDoctorsService->GetSpecializationRequest($specialization);
+
+            return $this->success($result,'get speclization', 200);
+        } catch (\Throwable $th) {
+            //throw $th;
             return $this->error($th->getMessage(), 'server issue', 500);
         }
     }

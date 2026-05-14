@@ -25,7 +25,7 @@ class ForgotPasswordController extends Controller
 
             $opt = $this->passwordService->generateandstore($validate['email']);
 
-            return $this->success($opt, 'otp send successful to your email.', 200);
+            return $this->success('opt', 'otp send successful to your email.', 200);
         } catch (\Throwable $th) {
             // throw $th;
             return $this->error($th->getMessage(), 'server error', 500);

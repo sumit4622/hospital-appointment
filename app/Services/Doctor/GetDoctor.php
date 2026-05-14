@@ -8,6 +8,6 @@ class GetDoctor
 {
     public function findById($id)
     {
-        return User::where('role', 'doctor')->findOrFail($id);
+        return User::where('status', 'doctor')->findOrFail($id);
     }
 }
