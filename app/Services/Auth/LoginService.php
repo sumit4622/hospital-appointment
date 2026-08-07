@@ -9,16 +9,10 @@ use Illuminate\Validation\ValidationException;
 
 class LoginService
 {
-    /**
-     * Authenticate a user and issue an API token.
-     *
-     * @param array $credentials
-     * @return array
-     * @throws ValidationException
-     */
-    public function login(array $credentials): array
-    { 
-        $email = Str::lower($credentials['email']);
+    public function login($credentials)
+    {
+        $email = str::upper($credentials['email']);
+        $password = str::upper($credentials['password']);
 
         $user = User::select('id', 'email', 'password')
             ->where('email', $email)
