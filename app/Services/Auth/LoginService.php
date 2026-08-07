@@ -9,15 +9,12 @@ use Illuminate\Validation\ValidationException;
 
 class LoginService
 {
-    public function login($credentials)
-    {
-        $email = str::upper($credentials['email']);
-        $password = str::upper($credentials['password']);
+    public function login(array $credentials)
+    { 
 
         $user = User::select('id', 'email', 'password')
-            ->where('email', $email)
-            ->first();
-
+                ->where('email', strtolower($credentials['email']))
+                ->first();
         if (! $user) {
             throw ValidationException::withMessages([
                 'email' => ['Account does not exist in our records.'],
@@ -32,8 +29,8 @@ class LoginService
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return [
+        return ([
             'token' => $token,
-        ];
+        ]);
     }
 }
