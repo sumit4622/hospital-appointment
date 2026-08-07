@@ -23,7 +23,7 @@ class GetSpecializationRequest extends FormRequest
     {
         return [
             //
-            'specialization' => 'required|string|min:3',
+            'specialization' => 'required|string',
         ];
     }
 }

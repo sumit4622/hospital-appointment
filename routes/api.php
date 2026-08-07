@@ -54,6 +54,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/book-appointment', [appointment::class, 'storeAppointment']);
             Route::get('/my-appointments/{id}', [appointment::class, 'getappoinment']);
             Route::get('/getSpeciality/find', [DoctorController::class, 'getSpeclization']);
+            Route::get('/doctors/find', [DoctorController::class, 'getDoctorspeclization']);
+
         });
 
         Route::prefix('admin')->group(function () {

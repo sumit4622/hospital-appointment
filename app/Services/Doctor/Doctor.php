@@ -38,7 +38,6 @@ class Doctor
 
         })->get();
 
-        return $result;
-
+        return $result->pluck('specialization')->unique()->values();
     }
 }
