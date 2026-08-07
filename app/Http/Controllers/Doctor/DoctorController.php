@@ -8,6 +8,7 @@ use App\Services\Doctor\Doctor;
 use App\Services\Doctor\GetDoctor;
 use Illuminate\Http\Request;
 use App\Http\Requests\GetSpecializationRequest;
+use Illuminate\Auth\Events\Validated;
 
 class DoctorController extends Controller
 {
@@ -80,5 +81,12 @@ class DoctorController extends Controller
             //throw $th;
             return $this->error($th->getMessage(), 'server issue', 500);
         }
+    }
+
+    function getDoctorspeclization(GetSpecializationRequest $request){
+        $data = $request->Validated();
+        dd($data);
+
+
     }
 }

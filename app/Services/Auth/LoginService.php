@@ -3,14 +3,26 @@
 namespace App\Services\Auth;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class LoginService
 {
-    public function login($credentials)
-    {
-        $user = User::where('email', $credentials['email'])->first();
+    /**
+     * Authenticate a user and issue an API token.
+     *
+     * @param array $credentials
+     * @return array
+     * @throws ValidationException
+     */
+    public function login(array $credentials): array
+    { 
+        $email = Str::lower($credentials['email']);
+
+        $user = User::select('id', 'email', 'password')
+            ->where('email', $email)
+            ->first();
 
         if (! $user) {
             throw ValidationException::withMessages([
@@ -27,7 +39,6 @@ class LoginService
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
-            'user' => $user,
             'token' => $token,
         ];
     }
